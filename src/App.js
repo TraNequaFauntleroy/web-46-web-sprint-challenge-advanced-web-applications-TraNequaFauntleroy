@@ -1,16 +1,28 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import Login from "./components/Login";
 import PrivateRoute from "./components/PrivateRoute";
 import BubblePage from './components/BubblePage'
 import "./styles.scss";
-// import Logout from './components/Logout'
-
- 
+import axios from "axios";
+import { axiosWithAuth } from "./helpers/axiosWithAuth";
 
 function App() {
+  const [loggedIn, setLoggedIn] = useState(false)
 
+  const logout = (e) => {
+    axiosWithAuth()
+      .post('/logout')
+      .then(res => { 
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+      })
+      .catch(err => {
+        console.log(err)
+      })
+      
+    }
   
 
   return (
@@ -18,18 +30,17 @@ function App() {
       <div className="App">
         <header>
           Color Picker Sprint Challenge
-          <a data-testid="logoutButton" href="#">logout</a>
+          <button  data-testid="logoutButton" onClick={logout}>{loggedIn ? "logout" : "login"}</button>
         </header>
 
-        <PrivateRoute path='/colors' component={BubblePage}/> 
-
-        <Route path='/login'>
-          <Login />
+        <Route exact path='/login'>
+          <Login setLoggedIn={setLoggedIn}/>
         </Route>
 
         <Route exact path='/'>
           <Login />
         </Route>
+        <PrivateRoute path='/colors' component={BubblePage}/> 
       </div>
     </Router>
   );

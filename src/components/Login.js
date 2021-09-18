@@ -1,13 +1,14 @@
 import React, {useState} from "react";
 import { useHistory } from "react-router";
-import axios from 'axios';
+// import axios from 'axios';
+import { axiosWithAuth } from "../helpers/axiosWithAuth";
 
 const initialValues = {
   username: '', 
   password: ''
 }
 
-const Login = () => {
+const Login = ({setLoggedIn}) => {
 
   const [formValues, setFormValues] = useState(initialValues);
   const { push } = useHistory()
@@ -22,19 +23,18 @@ const Login = () => {
 
   const onSubmit = (e) => {
       e.preventDefault();
-      axios.post('http://localhost:5000/api/login', formValues)
-          .then(res => {
-            console.log(res)
-              // window.localStorage.setItem('token', res.data.token)
-              // push('/colors')
-          })
-          .catch(err => {
-              console.log(err)
-          })
-      
+      console.log(formValues)
+      axiosWithAuth()
+        .post("/login", formValues)
+        .then(res => {
+          localStorage.setItem('token', res.data.payload);
+  
+          setLoggedIn(true)
+          push('/colors');
+        })    
   }
 
-  const error = 'Username and Password are required!';
+  // const error = 'Username and Password are required!';
 
   // if (initialValues.username === '' || initialValues.password === '') {
   //   return error
@@ -52,19 +52,19 @@ const Login = () => {
                 <input id='username'
                 name='username' 
                 values={formValues.username} 
-                onClick={handleChanges}/>
+                onChange={handleChanges}/>
                 
             <label htmlFor='password'>Password:</label>
                 <input id='password' 
                 name='password' 
                 // type='password'
                 values={formValues.password} 
-                onClick={handleChanges}/>
+                onChange={handleChanges}/>
             <button id='submit'>Login</button>
         </form>
       </div>
 
-      <p id="error" className="error">{error}</p>
+      {/* <p id="error" className="error">{error}</p> */}
     </div>
   );
 };

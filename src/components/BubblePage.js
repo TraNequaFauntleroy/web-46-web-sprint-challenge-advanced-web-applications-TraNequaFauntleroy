@@ -1,37 +1,47 @@
-import React, { useEffect, useState, useHistory, useParams } from "react";
+import React, { useEffect, useState } from "react";
+import {useHistory, useParams} from "react-router-dom"
 
 import Bubbles from "./Bubbles";
 import ColorList from "./ColorList";
-import fetchColorService from '../services/fetchColorService';
+import {fetchColorService} from '../services/fetchColorService';
 import axios from "axios";
+import { axiosWithAuth } from "../helpers/axiosWithAuth";
 
 const BubblePage = () => {
-  const [colors, setColors] = useState(fetchColorService);
+  const [colors, setColors] = useState([]);
   const [editing, setEditing] = useState(false);
 
   const { id } = useParams();
   const { push } = useHistory();
+
+  useEffect(() => {
+    fetchColorService(setColors)
+    
+  }, [])
+
 
   const toggleEdit = (value) => {
     setEditing(value);
   };
 
   const saveEdit = (editColor) => {
-    editColor.preventDefault();
-		axios.put(`http://localhost:5000/api/movies/${id}`, colors)
+
+		axiosWithAuth().put(`http://localhost:5000/api/colors/${editColor.id}`, editColor)
 			.then(res => {
-				setColors(res.data);
-				push(`/colors/${id}`)
+        console.log(res.data)
+        fetchColorService(setColors)
+				push(`/colors`)
 			})
 			.catch(err => {
 				console.log(err)
 			})
   };
 
-  const deleteColor = (colorToDelete) => {
-    axios.delete(`http://localhost:5000/api/colors/${id}`)
+  const deleteColor = ({id}) => {
+    axiosWithAuth()
+    .delete(`http://localhost:5000/api/colors/${id}`)
             .then(res => {
-               colorToDelete(id)
+               console.log(res.data)
                push('/colors')
             })
             .catch(err => {
