@@ -7,7 +7,7 @@ const initialValues = {
   password: ''
 }
 
-const Login = () => {
+const Login = (props) => {
 
   const [formValues, setFormValues] = useState(initialValues);
   const { push } = useHistory()
@@ -25,7 +25,7 @@ const Login = () => {
       axios
           .post('http://localhost:5000/api/login', formValues)
           .then(res => {
-              window.localStorage.setItem('token', res.data.payload)
+              localStorage.setItem('token', res.data.payload)
               push('/colors')
           })
           .catch(err => {
@@ -36,9 +36,11 @@ const Login = () => {
 
   const error = 'Username and Password are required!';
 
-  if (initialValues === '') {
-    return error
-  }
+  // if (initialValues.username === '' || initialValues.password === '') {
+  //   return error
+  // } else {
+  //   return 
+  // }
   //replace with error state
 
   return (
@@ -46,13 +48,13 @@ const Login = () => {
       <h1>Welcome to the Bubble App!</h1>
       <div data-testid="loginForm" className="login-form">
       <form onSubmit={onSubmit}>
-            <label htmlFor='username'>Username</label>
+            <label htmlFor='username'>Username:</label>
                 <input id='username'
                 name='username' 
                 values={formValues.username} 
                 onClick={handleChanges}/>
                 
-            <label htmlFor='password'>Password</label>
+            <label htmlFor='password'>Password:</label>
                 <input id='password' 
                 name='password' 
                 // type='password'
@@ -62,7 +64,7 @@ const Login = () => {
         </form>
       </div>
 
-      {/* <p id="error" className="error">{error}</p> */}
+      <p id="error" className="error">{error}</p>
     </div>
   );
 };

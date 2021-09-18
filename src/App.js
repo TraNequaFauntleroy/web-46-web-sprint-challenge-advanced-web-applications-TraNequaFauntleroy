@@ -6,16 +6,20 @@ import PrivateRoute from "./components/PrivateRoute";
 import BubblePage from './components/BubblePage'
 import "./styles.scss";
 
+
 function App() {
   return (
     <Router>
       <div className="App">
         <header>
           Color Picker Sprint Challenge
+          <Link to="/logout">Logout
           <a data-testid="logoutButton" href="#">logout</a>
+          <Link/>
         </header>
 
         <PrivateRoute path='/colors' component={BubblePage}/> 
+
         <Route path='/login'>
           <Login />
         </Route>
