@@ -7,7 +7,7 @@ const initialValues = {
   password: ''
 }
 
-const Login = (props) => {
+const Login = () => {
 
   const [formValues, setFormValues] = useState(initialValues);
   const { push } = useHistory()
@@ -22,11 +22,11 @@ const Login = (props) => {
 
   const onSubmit = (e) => {
       e.preventDefault();
-      axios
-          .post('http://localhost:5000/api/login', formValues)
+      axios.post('http://localhost:5000/api/login', formValues)
           .then(res => {
-              localStorage.setItem('token', res.data.payload)
-              push('/colors')
+            console.log(res)
+              // window.localStorage.setItem('token', res.data.token)
+              // push('/colors')
           })
           .catch(err => {
               console.log(err)
